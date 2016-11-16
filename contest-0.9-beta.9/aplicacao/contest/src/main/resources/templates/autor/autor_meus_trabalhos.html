@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   	<div th:include="fragments/head :: head"></div>
+	<link th:href="@{/css/time-line-style.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+	<link th:href="@{/css/jPages.css}" type="text/css" rel="stylesheet" media="screen,projection" />
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page">
+      <div th:include="fragments/autor_menu_navegacao :: autor_menu_navegacao"></div>
+      <div>
+        <div th:if="${naoHaTrabalhos}" id="error_area" class="row chip red white-text" th:text="#{NAO_HA_TRABALHOS}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${eventoVazioError}" id="error_area" class="row chip red white-text" th:text="#{ID_EVENTO_VAZIO_ERROR}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${erroAoCadastrar}" id="error_area" class="row chip red white-text" th:text="#{ERRO_CADASTRO_TRABALHO}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${sucessoEnviarTrabalho}" id="success_area" class="row chip green white-text" th:text="#{TRABALHO_ENVIADO}">
+          <i class="material-icons">close</i>
+        </div>
+        <div th:if="${erroExcluir}" id="error_area" class="row chip red white-text" th:text="${erroExcluir}">
+          <i class="material-icons">close</i>
+        </div>
+      </div>
+      <div th:unless="${#lists.isEmpty(eventos)}" class="row holder center"></div>
+      <div id="itemContainer" class="col s12" th:if="${not #lists.isEmpty(eventos)}">
+        
+        <div class="col s12 m7" th:each="evento,iter : ${eventos}">
+          <div class="card horizontal">
+            <div class="card-stacked">
+              <div th:include="fragments/evento_timeline :: evento-timeline(${evento})"></div>
+              <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'NAO_TEM_REVISAO'">
+                  <a th:if="${evento.isPeriodoInicial()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:if="${evento.isPeriodoRevisao()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
+               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+                </div>
+                <div class="card-action" th:if="${trabalhosEvento[__${iter.index}__]} == 'TEM_REVISAO'">
+                  <a th:if="${evento.isPeriodoInicial()}" th:href="@{'/autor/enviarTrabalhoForm/' + ${evento.id}}" class="waves-effect waves-light btn green">Enviar Novo Trabalho</a>
+               	  <a th:if="${evento.isPeriodoRevisao()}" class="btn disabled grey white-text">Fora do Prazo de Envio de Trabalho</a>
+               	  
+               	  <a th:href="@{'/autor/listarTrabalhos/'+ ${evento.id}}" class="waves-effect waves-light btn yellow">Listar Trabalhos</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+       <div th:unless="${#lists.isEmpty(eventosAtivos)}" class="row holder center"></div>
+    </div>
+
+   	<div th:include="fragments/footer :: footer"></div>
+   	<script type="text/javascript" th:src="@{/js/modernizr.js}"></script>
+    <script type="text/javascript" th:src="@{/js/timeline.main.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jPages.min.js}"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("div.holder").jPages({
+        	containerID : "itemContainer",
+        	perPage: 2
+        });
+      });
+    </script>    
+  </body>
+</html>

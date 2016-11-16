@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <div th:include="fragments/head :: head"></div>
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page">
+    <div th:include="fragments/organizador_menu_navegacao :: organizador_menu_navegacao"></div>
+      <div class="row">
+        <h2 th:text="'Trilhas do Evento :' + ${evento.nome}"></h2>
+        <div th:if="${organizadorError}" class="chip red darken-1">
+        	<span class="white-text" th:text= "${organizadorError}"></span>
+        	<i class="material-icons">close</i>
+        </div>
+        <div th:if="${trilhaAdd}" class="chip green darken-1">
+        	<span class="white-text" th:text= "${trilhaAdd}"></span>
+        	<i class="material-icons">close</i>
+        </div>
+        
+        <form class="col s12">
+          <div class="row"></div>
+          <div class="input-field col m3 offset-m10 s6"> 
+          	<a id="btn-modal" href="#modal1" class="waves-effect waves-light btn white-text modal-trigger">Trilha<i aria-hidden="true" class="fa fa-plus left"> </i></a>
+          </div>
+          <div class="row">
+            <div class="input-field col m12 s6">
+              <table class="striped centered">
+                <thead>
+                  <tr> 
+                    <th>Trilha</th>
+                    <th>Trabalhos Enviados</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody >             
+                  <tr th:each="itemTrilha : ${evento.trilhas}">
+                    <td><p class="center" th:text="${itemTrilha.nome}"></p></td>
+                    <td> <p class="center" th:text="${itemTrilha.numeroTrabalhos}"></p></td>
+                    <td> <a th:href="@{'/eventoOrganizador/trilha/' + ${itemTrilha.id} +'/'+ ${evento.id}}">Ver Trilha</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+<!--           
+          <div id="paginacao">         
+                        <div class="row col s12 center">
+                          <ul class="pagination">
+                            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="waves-effect"><a href="#">2</a></li>
+                            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+                          </ul>
+                        </div>
+          </div>
+ -->          
+        </form>
+      </div>
+      <form th:action="@{/eventoOrganizador/trilhas}" action="#" th:object="${trilha}" method="post">
+        <div id="modal1" class="modal">
+          <div class="modal-content">
+            <h4>Adicionar Trilha</h4>
+            <div class="input-field col m6 s6">
+            	<input type="hidden" th:value="${evento.id}" name = "eventoId"/>
+            	<input id="nome_da_trilha" th:field="*{nome}" name="nome" type="text" />
+            	<label for="nome_da_trilha">Nome da Trilha</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" value="Confirmar" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+          	<a href="#" class="modal-action modal-close waves-effect btn-flat">Fechar</a>
+       	  </div>
+        </div>
+      </form>
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+  </body>
+</html>

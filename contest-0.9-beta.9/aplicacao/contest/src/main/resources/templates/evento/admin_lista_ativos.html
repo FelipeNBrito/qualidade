@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   	<div th:include="fragments/head :: head"></div>
+  </head>
+  <body>
+	<div th:include="fragments/header :: header"></div>
+    <div class="container page">
+      <div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
+      <div class="row">
+      	<h2 class="col s12">Eventos Ativos</h2>
+      </div>
+
+      <div class="row" th:switch="${!#lists.isEmpty(eventosAtivos)}">
+        <div th:case="${true}">
+         
+         <div th:each="evento : ${eventosAtivos}" class="col m6 s6">
+          <div class="card">
+            <div class="card-content"><span class="card-title" th:text="${evento.nome}" ></span>
+    		  <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
+              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
+            </div>
+            <div class="card-action"><a href="#" class="btn white-text waves-effect waves-light blue-grey">Inativar</a></div>
+          </div>
+         </div>
+        </div>
+        
+        
+
+        <h4 th:if="${false}">Não há eventos Ativos</h4>
+
+<!--         
+        <div class="center">
+          <ul class="pagination">
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li class="waves-effect"><a href="#">2</a></li>
+            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+          </ul>
+        </div>
+-->        
+      </div>
+ 
+      
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        
+        //Js para o dropdown
+        $('.dropdown-button').dropdown({
+            inDuration: 300,
+            outDuration: 225,
+            constrain_width: false, // Does not change width of dropdown to that of the activator
+            gutter: 0, // Spacing from edge
+            belowOrigin: false, // Displays dropdown below the button
+            alignment: 'left' // Displays dropdown with edge aligned to the left of button
+          }
+        );
+        
+      });
+    </script>
+  </body>
+</html>

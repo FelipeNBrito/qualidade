@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+</head>
+<body>
+    <div th:fragment="evento-timeline(evento)">
+		<div class="card-content"
+			th:with="data_inicial=${#calendars.format({evento.PrazoSubmissaoInicial},'dd/MM/YYYY')},
+			data_inicial_label=${#calendars.format({evento.PrazoSubmissaoInicial},'dd MMM')},
+			data_revisao_inicial=${#calendars.format({evento.PrazoRevisaoInicial},'dd/MM/YYYY')},
+			data_revisao_inicial_label=${#calendars.format({evento.PrazoRevisaoInicial},'dd MMM')},
+			data_revisao_final=${#calendars.format({evento.PrazoRevisaoFinal},'dd/MM/YYYY')},
+			data_revisao_final_label=${#calendars.format({evento.PrazoRevisaoFinal},'dd MMM')},
+			data_fim_envio_final=${#calendars.format({evento.PrazoSubmissaoFinal},'dd/MM/YYYY')},
+			data_fim_envio_final_label=${#calendars.format({evento.PrazoSubmissaoFinal},'dd MMM')},
+			hoje=${#calendars.createToday()},
+			data_hoje=${#calendars.format({hoje},'dd/MM/YYYY')},
+			data_hoje_label=${#calendars.format({hoje},'dd MMM')}
+			">
+			<span class="card-title" th:text="${evento.nome}"></span>
+			<p th:text="${evento.descricao}"></p>
+			<section class="cd-horizontal-timeline">
+		  	<p>Datas importantes</p>
+		  	<div class="timeline">
+				<div class="events-wrapper">
+					<div class="events">
+						<ol>
+							<li><a class="selected" href="#0" th:attr="data-date=${data_inicial}" th:text="${data_inicial_label}">16 Jan</a></li>
+							<!--<li th:if="${evento.isPeriodoInicial()}"><a class="selected" href="#0" th:attr="data-date=${data_hoje}" th:text="${data_hoje_label}"></a></li> -->
+							<li><a href="#0" th:attr="data-date=${data_revisao_inicial}" th:text="${data_revisao_inicial_label}">28 Feb</a></li>
+							<!--<li th:if="${evento.isPeriodoRevisao()}"><a class="selected" href="#0" th:attr="data-date=${data_hoje}" th:text="${data_hoje_label}"></a></li> -->
+							<li><a href="#0" th:attr="data-date=${data_revisao_final}" th:text="${data_revisao_final_label}">20 Mar</a></li>
+							<!--<li th:if="${evento.isPeriodoFinal()}"><a class="selected" href="#0" th:attr="data-date=${data_hoje}" th:text="${data_hoje_label}"></a></li> -->
+							<li><a href="#0" th:attr="data-date=${data_fim_envio_final}" th:text="${data_fim_envio_final_label}">20 Mar</a></li>
+						</ol>
+						<span class="filling-line" aria-hidden="true"></span>
+					</div>
+				</div>
+				<ul class="cd-timeline-navigation">
+					<li><a href="#0" class="prev inactive">Prev</a></li>
+					<li><a href="#0" class="next">Next</a></li>
+				</ul>
+			</div>
+			<div class="events-content">
+				<ol>
+					<li class="selected" th:attr="data-date=${data_inicial}">
+						<em>Começa o período de submissão dos artigos</em>
+					</li>
+					<!-- 
+					<li class="selected" th:if="${evento.isPeriodoInicial()}" th:attr="data-date=${data_hoje}">
+						<em>Hoje, período de submissão aberto</em>
+					</li>
+					 -->
+					<li th:attr="data-date=${data_revisao_inicial}">
+						<em>Terminou o periodo de submissão, hora de começar as Revisões</em>
+					</li>
+					<!-- 
+					<li class="selected" th:if="${evento.isPeriodoRevisao()}" th:attr="data-date=${data_hoje}">
+						<em>Hoje, período de revisão aberto</em>
+					</li>
+					 -->
+					<li th:attr="data-date=${data_revisao_final}">
+						<em>Terminaram as revisões, hora de submeter a versão final</em>
+					</li>
+					<!-- 
+					<li class="selected" th:if="${evento.isPeriodoFinal()}" th:attr="data-date=${data_hoje}">
+						<em>Hoje, período de envio da versão final aberto</em>
+					</li>
+					 -->
+					<li href="#0" th:attr="data-date=${data_fim_envio_final}">
+						<em>Ultimo dia para submeter a versão final do artigo</em>
+					</li>
+				</ol>
+			</div>
+		 </section>
+		</div>
+    </div>
+</body>
+</html>
+	
+	
+	
+	
+	
+	

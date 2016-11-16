@@ -1,0 +1,29 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+aplicacao/contest/.metadata
+aplicacao/contest/.settings
+aplicacao/contest/.classpath
+aplicacao/contest/.project
+aplicacao/contest/bin
+aplicacao/contest/target
+aplicacao/contest/.springBeans
+aplicacao/contest/.mvn
+aplicacao/contest/mvnw*
+
+aplicacao/contest/src/main/resources/application.properties
+aplicacao/contest/src/main/resources/application-homologacao.properties
+aplicacao/contest/src/main/resources/application-producao.properties
+
+*.bak
+*.log

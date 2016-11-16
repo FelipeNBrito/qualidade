@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   	<div th:include="fragments/head :: head"></div>
+  </head>
+  <body>
+    <div th:include="fragments/header :: header"></div>
+    <div class="container page">
+      <div th:include="fragments/admin_menu_navegacao :: admin_menu_navegacao"></div>
+      <div class="row">
+      	<h2 class="col s12">Eventos Inativos</h2>
+      	
+      	<div th:if="${sucessoExcluir}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${sucessoCadastrar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_CADASTRADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${sucessoEditar}" class="chip blue darken-1">
+          <span class="white-text" th:text="#{EVENTO_EDITADO_COM_SUCESSO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+        <div th:if="${erroExcluir}" class="chip red darken-1">
+          <span class="white-text" th:text="#{EVENTO_INATIVO_EXCLUIDO_ERRO}"></span>
+          <i class="material-icons">close</i>
+        </div>
+        
+      </div>
+
+      <div class="row" th:switch="${!#lists.isEmpty(eventosInativos)}">
+
+        <div th:case="${true}">
+      
+         <div th:each="evento : ${eventosInativos}" class="col m6 s12">
+          <div class="card">
+            <div class="card-content"><span class="card-title" th:text="${evento.nome}"></span>
+              <div th:include="fragments/listar_participacoes :: listar('Organizador(es):', ${evento.organizadores})"></div>
+              <p th:text="|Visibilidade: ${evento.visibilidade.visibilidade}|"></p>
+            </div>
+            <div class="card-action">
+              <a th:href="@{'/evento/editar/' + ${evento.id}}" class="btn white-text waves-effect waves-light orange">Editar</a>
+              <a th:attr="href='#modal' + ${evento.id}"  
+	               class="btn white-text waves-effect waves-light red confirmar modal-trigger">Excluir</a>
+            </div>
+          </div>
+          
+          <div th:attr="id='modal' + ${evento.id}" class="modal">
+            <div class="modal-content">
+              <h4>Excluir Evento</h4>
+              <h5 th:text="${evento.nome}"></h5>
+              <p>Tem certeza que quer excluir esse evento?</p>
+             </div>
+            <form th:action="@{/evento/remover}" method="post">
+              <div class="modal-footer">
+                <input type="hidden" name="idEvento" th:value="${evento.id}"/>
+                <button type="submit" class="modal-action modal-close waves-effect btn-flat">Confirmar</button>
+                <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a>
+              </div>
+            </form>
+           </div>
+          
+         </div>
+        </div>
+        
+        <h4 th:if="${false}">Não há eventos Ativos</h4>
+
+<!--         
+        <div class="center">
+          <ul class="pagination">
+            <li class="disabled"><a href="#"><i class="material-icons">chevron_left</i></a></li>
+            <li class="active"><a href="#">1</a></li>
+            <li class="waves-effect"><a href="#">2</a></li>
+            <li class="waves-effect"><a href="#"><i class="material-icons">chevron_right</i></a></li>
+          </ul>
+        </div>
+-->
+        
+        <div id="modal" class="modal">
+          <div class="modal-content">
+            <h4>Excluir Evento</h4>
+            <h5 id="nomeEventoModal"></h5>
+            <p>Tem certeza que quer excluir esse evento?</p>
+          </div>
+          <div class="modal-footer">
+          <a id="confirmarExclusao" href="#" class="modal-action modal-close waves-effect btn-flat">Confirmar</a>
+          <a href="#" class="modal-action modal-close waves-effect btn-flat">Cancelar</a></div>
+        </div>
+      </div>
+    </div>
+    <div th:include="fragments/footer :: footer"></div>
+  </body>
+</html>
