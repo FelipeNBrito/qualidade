@@ -5,9 +5,11 @@ var fs = require('fs');
 var request = require('request');
 var ProgressBar = require('progress');
 var unzip = require('unzip');
+var exec = require('child_process').exec;
 
 
 var uncompressed = 0;
+var PMDDone = 0;
 
 // To prompt the user
  prompt.start();
@@ -34,33 +36,46 @@ var uncompressed = 0;
             total: data.length
           });
 
+        var PMDBar = new ProgressBar('  Runnig PMD [:bar] :percent :current/:total', {
+                            complete: '=',
+                            incomplete: ' ',
+                            width: 20,
+                            total: data.length
+                        });
+
+        var totalReleasesUncompressedBar = new ProgressBar('  Unzipping Releases [:bar] :percent :current/:total', {
+                            complete: '=',
+                            incomplete: ' ',
+                            width: 20,
+                            total: data.length
+                        });
+
         var dir = result.repo;
 
         if (!fs.existsSync(dir)){
             fs.mkdirSync(dir);
         }
 
+
         for (var i = 0; i < data.length; i++) {
 
           totalReleasesDownloadedBar.tick(0);
+
+          fs.writeFile(dir + "/" + data[i].tag_name  + ".date", data[i].created_at, function(err) {
+          });
           
-          downloadRelease(data[i].zipball_url, data[i].tag_name, dir, function(releaseName){
+          downloadRelease(data[i].zipball_url, data[i].tag_name, dir, function(releaseName) {
              totalReleasesDownloadedBar.tick(1);
+
+
 
              if (totalReleasesDownloadedBar.complete) {
                 console.log("Finished downloading releases.");
 
-                var totalReleasesUncompressedBar = new ProgressBar('  Unzipping Releases [:bar] :percent :current/:total', {
-                    complete: '=',
-                    incomplete: ' ',
-                    width: 20,
-                    total: data.length
-                });
-
                 totalReleasesUncompressedBar.tick(uncompressed);
              }
 
-             unzipRelease(releaseName, dir, function(){
+             unzipRelease(releaseName, dir, function(releaseName){
                 
                 if (totalReleasesDownloadedBar.complete) {
                   totalReleasesUncompressedBar.tick(1);
@@ -68,7 +83,26 @@ var uncompressed = 0;
                   uncompressed++;
                 }
 
-                fs.unlinkSync(dir + "/" + releaseName + ".zip");
+                if (totalReleasesUncompressedBar.complete) {
+                  console.log("Finished uncompressing releases.");
+                  PMDBar.tick(PMDDone);
+                }
+             
+
+                //fs.unlinkSync(dir + "/" + releaseName + ".zip");
+
+                generatePMDReport(releaseName, dir, function(releaseName){
+                  
+                  if (totalReleasesUncompressedBar.complete) {
+                    
+                    PMDBar.tick(1);
+                  
+                  } else {
+                    PMDDone++;
+                  }
+
+                });
+
              });
 
           });
@@ -103,5 +137,28 @@ var unzipRelease = function(fileName, dir, callback) {
   fs
     .createReadStream(dir + "/" + fileName + ".zip")
     .pipe(unzip.Extract({ path: dir + "/" + fileName }));
-    callback();
+    callback(fileName);
 }
+
+var generatePMDReport = function(fileName, dir, callback) {
+
+  var cmd = './pmd/bin/run.sh pmd -d ' + dir + '/' + fileName +  ' -f xml -R rulesets/java/codesize.xml -reportfile ./'+ dir + '/' + fileName + '.xml';
+
+  exec(cmd, function(error, stdout, stderr) {
+      callback(fileName);
+  });
+}
+
+var deleteFolderRecursive = function(path) {
+  if( fs.existsSync(path) ) {
+    fs.readdirSync(path).forEach(function(file,index){
+      var curPath = path + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};

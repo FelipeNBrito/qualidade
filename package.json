@@ -16,10 +16,12 @@
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
     "progress": "^1.1.8",
+    "prompt": "^1.0.0",
     "request": "^2.78.0",
     "requestify": "^0.2.5",
     "serve-favicon": "~2.3.0",
     "unzip": "^0.1.11",
-    "winston": "^2.3.0"
+    "winston": "^2.3.0",
+    "xml2js": "^0.4.17"
   }
 }
